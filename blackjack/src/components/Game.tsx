@@ -52,15 +52,15 @@ const calculateScore = (hand: Card[]): number => {
 
 const Game: React.FC = () => {
   const [deck, setDeck] = useState<Card[]>([]);
-  const [playerHand, setPlayerHand] = useState<Card[]>([]); // Рука гравця
-  const [dealerHand, setDealerHand] = useState<Card[]>([]); // Рука дилера
-  const [playerScore, setPlayerScore] = useState(0); // Рахунок гравця
-  const [dealerScore, setDealerScore] = useState(0); // Рахунок дилера
-  const [gameState, setGameState] = useState<'menu' | 'playing' | 'result'>('menu'); // 'menu', 'playing', 'result'
-  const [result, setResult] = useState<'win' | 'lose' | 'draw' | ''>(''); // 'win', 'lose', 'draw'
-  const [balance, setBalance] = useState(1000); // Початковий баланс гравця
-  const [bet, setBet] = useState(100); // Ставка
-  const [wins, setWins] = useState(0); // Кількість перемог
+  const [playerHand, setPlayerHand] = useState<Card[]>([]);
+  const [dealerHand, setDealerHand] = useState<Card[]>([]);
+  const [playerScore, setPlayerScore] = useState(0);
+  const [dealerScore, setDealerScore] = useState(0);
+  const [gameState, setGameState] = useState<'menu' | 'playing' | 'result'>('menu');
+  const [result, setResult] = useState<'win' | 'lose' | 'draw' | ''>('');
+  const [balance, setBalance] = useState(1000);
+  const [bet, setBet] = useState(100);
+  const [wins, setWins] = useState(0);
   const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
@@ -83,7 +83,7 @@ const Game: React.FC = () => {
     }
     setBalance(balance - bet);
 
-    setDeck(shuffleDeck(createDeck())); // Перемішати колоду перед кожною грою
+    setDeck(shuffleDeck(createDeck()));
 
     let newPlayerHand: Card[] = [];
     let newDealerHand: Card[] = [];

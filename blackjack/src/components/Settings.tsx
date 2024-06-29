@@ -8,7 +8,7 @@ type SettingsProps = {
 
 const Settings: React.FC<SettingsProps> = ({ onClose, onAddTokens }) => {
   const [tokens, setTokens] = useState(0);
-  const [rate] = useState(7.6); // Курс токена, наприклад, 1 токен = 0.01$
+  const [rate] = useState(0.01); // Курс токена, наприклад, 1 токен = 0.01$
   const walletAddress = "UQDH2tHVgYfe5VlVgNrvk3Ukd3zfIDbRUkq5QvY2TFxUACxa"; // Ваш гаманець
 
   const handleAddTokens = () => {
