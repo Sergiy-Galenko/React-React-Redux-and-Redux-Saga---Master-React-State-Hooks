@@ -1,7 +1,7 @@
 import { takeEvery, put } from 'redux-saga/effects';
 import { increment, incrementByAmount } from './exampleReducer';
 
-function* incrementAsync() {
+export function* incrementAsync() {
   yield put(incrementByAmount(1));
 }
 
