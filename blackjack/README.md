@@ -1,70 +1,86 @@
-# Getting Started with Create React App
+# Blackjack Game
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a simple Blackjack game built with React, TypeScript, Redux, and Redux-Saga.
 
-## Available Scripts
+## Table of Contents
 
+- [Installation](#installation)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [Available Scripts](#available-scripts)
+- [Technologies Used](#technologies-used)
+- [License](#license)
+
+## Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/blackjack.git
+cd blackjack
+
+Install the dependencies:
+yarn install
+npm install 
+Usage
+To start the development server, run:
+yarn start
+The app will be available at http://localhost:3000.
+
+Project Structure
+blackjack/
+├── node_modules/
+├── public/
+│   ├── index.html
+│   ├── background.jpg
+│   ├── cards/
+│   │   ├── hidden.png
+│   │   ├── c2.png
+│   │   ├── c3.png
+│   │   ├── ...
+│   └── ...
+├── src/
+│   ├── components/
+│   │   ├── Deck.tsx
+│   │   ├── Game.tsx
+│   │   ├── Menu.tsx
+│   │   ├── Result.tsx
+│   │   └── Settings.tsx
+│   ├── store/
+│   │   ├── exampleReducer.ts
+│   │   ├── exampleSaga.ts
+│   │   ├── index.ts
+│   │   ├── rootReducer.ts
+│   │   └── rootSaga.ts
+│   ├── App.tsx
+│   ├── index.tsx
+│   ├── index.css
+│   └── react-app-env.d.ts
+├── .eslintrc.json
+├── package.json
+├── tsconfig.json
+└── yarn.lock
+
+
+Available Scripts
 In the project directory, you can run:
 
-### `npm start`
+yarn start
+Runs the app in development mode. Open http://localhost:3000 to view it in the browser.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+yarn build
+Builds the app for production to the build folder.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+yarn test
+Launches the test runner in interactive watch mode.
 
-### `npm test`
+yarn eject
+Ejects the configuration files from react-scripts so you can customize them.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Technologies Used
+React: A JavaScript library for building user interfaces.
+TypeScript: A typed superset of JavaScript that compiles to plain JavaScript.
+Redux: A predictable state container for JavaScript apps.
+Redux-Saga: A library that aims to make application side effects (e.g., asynchronous actions) easier to manage.
+@reduxjs/toolkit: The official, recommended way to write Redux logic.
+qrcode.react: A React component to generate QR codes.
