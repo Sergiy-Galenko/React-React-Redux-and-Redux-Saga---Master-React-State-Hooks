@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import Deck from './Deck';
-import Menu from './Menu';
 import Result from './Result';
 import Settings from './Settings';
 
 type Card = {
   suit: string;
   rank: string;
+};
+
+type GameProps = {
+  user: string;
+  balance: number;
+  isDemo: boolean;
+  bet: number;
+  setBet: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const suits = ['hearts', 'diamonds', 'clubs', 'spades'];
@@ -50,16 +57,15 @@ const calculateScore = (hand: Card[]): number => {
   return score;
 };
 
-const Game: React.FC = () => {
+const Game: React.FC<GameProps> = ({ user, balance, isDemo, bet, setBet }) => {
   const [deck, setDeck] = useState<Card[]>([]);
   const [playerHand, setPlayerHand] = useState<Card[]>([]);
   const [dealerHand, setDealerHand] = useState<Card[]>([]);
   const [playerScore, setPlayerScore] = useState(0);
   const [dealerScore, setDealerScore] = useState(0);
-  const [gameState, setGameState] = useState<'menu' | 'playing' | 'result'>('menu');
+  const [gameState, setGameState] = useState<'playing' | 'result'>('playing');
   const [result, setResult] = useState<'win' | 'lose' | 'draw' | ''>('');
-  const [balance, setBalance] = useState(1000);
-  const [bet, setBet] = useState(100);
+  const [currentBalance, setCurrentBalance] = useState(balance);
   const [wins, setWins] = useState(0);
   const [showSettings, setShowSettings] = useState(false);
 
@@ -77,11 +83,11 @@ const Game: React.FC = () => {
   };
 
   const handleDeal = () => {
-    if (balance < bet) {
+    if (currentBalance < bet) {
       alert('Недостатньо коштів для цієї ставки!');
       return;
     }
-    setBalance(balance - bet);
+    setCurrentBalance(currentBalance - bet);
 
     setDeck(shuffleDeck(createDeck()));
 
@@ -127,13 +133,13 @@ const Game: React.FC = () => {
 
     if (newDealerScore > 21 || playerScore > newDealerScore) {
       setResult('win');
-      setBalance(balance + bet * 2);
+      setCurrentBalance(currentBalance + bet * 2);
       setWins(wins + 1);
     } else if (playerScore < newDealerScore) {
       setResult('lose');
     } else {
       setResult('draw');
-      setBalance(balance + bet);
+      setCurrentBalance(currentBalance + bet);
     }
 
     setGameState('result');
@@ -146,7 +152,7 @@ const Game: React.FC = () => {
     setPlayerScore(0);
     setDealerScore(0);
     setResult('');
-    setGameState('menu');
+    setGameState('playing');
   };
 
   const handleShowSettings = () => {
@@ -158,25 +164,16 @@ const Game: React.FC = () => {
   };
 
   const handleAddTokens = (amount: number) => {
-    setBalance(balance + amount);
+    setCurrentBalance(currentBalance + amount);
   };
 
   return (
     <div>
-      {gameState === 'menu' && (
-        <Menu
-          onStart={handleDeal}
-          bet={bet}
-          setBet={setBet}
-          balance={balance}
-          onSettings={handleShowSettings}
-        />
-      )}
       {gameState === 'playing' && (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <h1>Гра Блекджек</h1>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <h2>Я</h2>
+            <h2>{user}</h2>
             <Deck cards={playerHand} />
             <p>Рахунок: {playerScore}</p>
             <button onClick={handleHit}>Взяти карту</button>
@@ -187,7 +184,7 @@ const Game: React.FC = () => {
             <Deck cards={dealerHand.map((card, index) => (index === 0 ? card : { suit: 'hidden', rank: 'hidden' }))} />
             <p>Рахунок: {dealerScore}</p>
           </div>
-          <p>Баланс: {balance}</p>
+          <p>Баланс: ${currentBalance}</p>
         </div>
       )}
       {gameState === 'result' && <Result result={result} onRestart={handleRestart} />}

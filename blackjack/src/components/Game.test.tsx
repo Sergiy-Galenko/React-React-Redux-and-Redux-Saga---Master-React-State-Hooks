@@ -7,27 +7,23 @@ import Game from './Game';
 test('renders Game component', () => {
   render(
     <Provider store={store}>
-      <Game />
+      <Game user="Test User" balance={1000} isDemo={true} bet={100} setBet={jest.fn()} />
     </Provider>
   );
 
-  const gameElement = screen.queryByText(/Гра Блекджек/i);
-  expect(gameElement).not.toBeNull();
+  expect(screen.getByText(/Гра Блекджек/i)).toBeTruthy();
 });
 
 test('increments example value', () => {
   render(
     <Provider store={store}>
-      <Game />
+      <Game user="Test User" balance={1000} isDemo={true} bet={100} setBet={jest.fn()} />
     </Provider>
   );
 
-  const incrementButton = screen.queryByText(/Increment Example Value/i);
-  if (incrementButton) {
-    fireEvent.click(incrementButton);
-    fireEvent.click(incrementButton);
+  const incrementButton = screen.getByText(/Increment Example Value/i);
+  fireEvent.click(incrementButton);
+  fireEvent.click(incrementButton);
 
-    const exampleValueElement = screen.queryByText(/Example Value: 2/i);
-    expect(exampleValueElement).not.toBeNull();
-  }
+  expect(screen.getByText(/Example Value:/i)).toHaveTextContent('Example Value: 2');
 });

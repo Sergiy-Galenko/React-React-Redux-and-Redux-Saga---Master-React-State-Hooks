@@ -1,17 +1,17 @@
 import React from 'react';
+import { Button, Box } from '@mui/material';
 
-type ResultProps = {
+interface ResultProps {
   result: 'win' | 'lose' | 'draw' | '';
   onRestart: () => void;
-};
+}
 
 const Result: React.FC<ResultProps> = ({ result, onRestart }) => {
   return (
-    <div className="result">
-      <h1>{result === 'win' ? 'Ви виграли!' : result === 'lose' ? 'Ви програли!' : 'Нічия!'}</h1>
-      <p>{result === 'win' ? 'Вітаємо! Ви отримали додаткові кошти.' : result === 'lose' ? 'На жаль, ви програли свою ставку.' : 'Ставка повернена.'}</p>
-      <button onClick={onRestart}>Перезапустити гру</button>
-    </div>
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <h2>Результат гри: {result === 'win' ? 'Ви виграли!' : result === 'lose' ? 'Ви програли' : 'Нічия'}</h2>
+      <Button onClick={onRestart} variant="contained">Почати спочатку</Button>
+    </Box>
   );
 };
 
