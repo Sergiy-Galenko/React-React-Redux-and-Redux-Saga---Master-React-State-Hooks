@@ -1,70 +1,80 @@
 import React, { useState } from 'react';
+import Settings from './Settings';
+import Store from './Store';
 
 type MenuProps = {
   onStart: (user: string, balance: number, isDemo: boolean) => void;
   bet: number;
-  setBet: React.Dispatch<React.SetStateAction<number>>;
+  setBet: (bet: number) => void;
   balance: number;
+  setBalance: (balance: number) => void;
   onSettings: () => void;
 };
 
-const Menu: React.FC<MenuProps> = ({ onStart, bet, setBet, balance, onSettings }) => {
+const Menu: React.FC<MenuProps> = ({ onStart, bet, setBet, balance, setBalance, onSettings }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isStoreOpen, setIsStoreOpen] = useState(false);
   const [user, setUser] = useState('');
-  const [demoBalance, setDemoBalance] = useState(balance);
   const [isDemo, setIsDemo] = useState(true);
 
   const handleOpenSettings = () => {
     setIsSettingsOpen(true);
   };
 
+  const handleOpenStore = () => {
+    setIsStoreOpen(true);
+  };
+
   const handleCloseSettings = () => {
     setIsSettingsOpen(false);
   };
 
+  const handleCloseStore = () => {
+    setIsStoreOpen(false);
+  };
+
   const handleStartGame = () => {
-    onStart(user, demoBalance, isDemo);
+    onStart(user, balance, isDemo);
   };
 
   return (
-    <div className="centered-container" style={{ width: '300px', padding: '20px', backgroundColor: '#333', color: 'white', borderRadius: '10px' }}>
-      <h1>Гра Блекджек</h1>
+    <div style={{ textAlign: 'center', marginTop: '100px' }}>
       <input
         type="text"
         placeholder="Ім'я користувача"
         value={user}
         onChange={(e) => setUser(e.target.value)}
-        style={{ marginBottom: '10px', padding: '10px', width: '100%', borderRadius: '5px', border: 'none' }}
+        style={{ marginBottom: '20px' }}
       />
-      <div style={{ marginBottom: '10px', width: '100%' }}>
-        <label>Баланс</label>
-        <input
-          type="number"
-          value={demoBalance}
-          onChange={(e) => setDemoBalance(parseInt(e.target.value))}
-          style={{ padding: '10px', width: '100%', borderRadius: '5px', border: 'none', backgroundColor: '#444', color: 'white' }}
-        />
+      <div style={{ marginBottom: '20px' }}>
+        <label>
+          Баланс
+          <input
+            type="number"
+            value={balance}
+            onChange={(e) => setBalance(parseInt(e.target.value))}
+            min={1}
+            max={1000}
+            style={{ marginLeft: '10px' }}
+          />
+        </label>
       </div>
-      <div style={{ marginBottom: '10px', width: '100%' }}>
-        <label>Демо баланс</label>
-        <input
-          type="checkbox"
-          checked={isDemo}
-          onChange={(e) => setIsDemo(e.target.checked)}
-          style={{ marginLeft: '10px' }}
-        />
+      <div style={{ marginBottom: '20px' }}>
+        <label>
+          Демо баланс
+          <input
+            type="checkbox"
+            checked={isDemo}
+            onChange={() => setIsDemo(!isDemo)}
+            style={{ marginLeft: '10px' }}
+          />
+        </label>
       </div>
-      <div style={{ marginBottom: '10px', width: '100%' }}>
-        <label>Ставка</label>
-        <input
-          type="number"
-          value={bet}
-          onChange={(e) => setBet(parseInt(e.target.value))}
-          style={{ padding: '10px', width: '100%', borderRadius: '5px', border: 'none', backgroundColor: '#444', color: 'white' }}
-        />
-      </div>
-      <button onClick={handleStartGame} style={{ padding: '10px 20px', marginBottom: '10px', borderRadius: '5px', border: 'none', backgroundColor: '#4CAF50', color: 'white', cursor: 'pointer' }}>ПОЧАТИ ГРУ</button>
-      <button onClick={onSettings} style={{ padding: '10px 20px', borderRadius: '5px', border: 'none', backgroundColor: '#4CAF50', color: 'white', cursor: 'pointer' }}>НАЛАШТУВАННЯ</button>
+      <button onClick={handleStartGame} style={{ marginRight: '10px' }}>ПОЧАТИ ГРУ</button>
+      <button onClick={handleOpenSettings} style={{ marginRight: '10px' }}>НАЛАШТУВАННЯ</button>
+      <button onClick={handleOpenStore}>МАГАЗИН</button>
+      {isSettingsOpen && <Settings onClose={handleCloseSettings} onAddTokens={(amount) => setBalance(balance + amount)} />}
+      {isStoreOpen && <Store onClose={handleCloseStore} />}
     </div>
   );
 };

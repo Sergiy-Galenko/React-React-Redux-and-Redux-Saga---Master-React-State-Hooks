@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Game from './components/Game';
 import Menu from './components/Menu';
+import Game from './components/Game';
 
 const App: React.FC = () => {
   const [gameStarted, setGameStarted] = useState(false);
@@ -9,19 +9,33 @@ const App: React.FC = () => {
   const [isDemo, setIsDemo] = useState(true);
   const [bet, setBet] = useState(100);
 
-  const handleStartGame = (user: string, balance: number, isDemo: boolean) => {
-    setUser(user);
-    setBalance(balance);
-    setIsDemo(isDemo);
+  const handleStartGame = (username: string, userBalance: number, demoMode: boolean) => {
+    setUser(username);
+    setBalance(userBalance);
+    setIsDemo(demoMode);
     setGameStarted(true);
   };
 
   return (
-    <div className="centered-container">
+    <div>
       {!gameStarted ? (
-        <Menu onStart={handleStartGame} bet={bet} setBet={setBet} balance={balance} onSettings={() => {}} />
+        <Menu
+          onStart={handleStartGame}
+          bet={bet}
+          setBet={setBet}
+          balance={balance}
+          setBalance={setBalance}
+          onSettings={() => {}}
+        />
       ) : (
-        <Game user={user} balance={balance} isDemo={isDemo} bet={bet} setBet={setBet} />
+        <Game
+          user={user}
+          balance={balance}
+          setBalance={setBalance}
+          isDemo={isDemo}
+          bet={bet}
+          setBet={setBet}
+        />
       )}
     </div>
   );

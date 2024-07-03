@@ -1,63 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import Deck from './Deck';
 import Result from './Result';
-import Settings from './Settings';
-
-type Card = {
-  suit: string;
-  rank: string;
-};
+import { Card, createDeck, shuffleDeck, calculateScore, dealCard } from '../utils/cardUtils';
 
 type GameProps = {
   user: string;
   balance: number;
+  setBalance: (balance: number) => void;
   isDemo: boolean;
   bet: number;
-  setBet: React.Dispatch<React.SetStateAction<number>>;
+  setBet: (bet: number) => void;
 };
 
-const suits = ['hearts', 'diamonds', 'clubs', 'spades'];
-const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '1'];
-
-const createDeck = (): Card[] => {
-  const deck: Card[] = [];
-  suits.forEach(suit => {
-    ranks.forEach(rank => {
-      deck.push({ suit, rank });
-    });
-  });
-  return deck;
-};
-
-const shuffleDeck = (deck: Card[]): Card[] => {
-  for (let i = deck.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [deck[i], deck[j]] = [deck[j], deck[i]];
-  }
-  return deck;
-};
-
-const getCardValue = (card: Card): number => {
-  if (['11', '12', '13'].includes(card.rank)) {
-    return 10;
-  }
-  if (card.rank === '1') {
-    return 11;
-  }
-  return parseInt(card.rank);
-};
-
-const calculateScore = (hand: Card[]): number => {
-  let score = hand.reduce((total, card) => total + getCardValue(card), 0);
-  let aces = hand.filter(card => card.rank === '1').length;
-  while (score > 21 && aces > 0) {
-    score -= 10;
-    aces -= 1;
-  }
-  return score;
-};
-
-const Game: React.FC<GameProps> = ({ user, balance, isDemo, bet, setBet }) => {
+const Game: React.FC<GameProps> = ({ user, balance, setBalance, isDemo, bet, setBet }) => {
   const [deck, setDeck] = useState<Card[]>([]);
   const [playerHand, setPlayerHand] = useState<Card[]>([]);
   const [dealerHand, setDealerHand] = useState<Card[]>([]);
@@ -65,39 +20,29 @@ const Game: React.FC<GameProps> = ({ user, balance, isDemo, bet, setBet }) => {
   const [dealerScore, setDealerScore] = useState(0);
   const [gameState, setGameState] = useState<'playing' | 'result'>('playing');
   const [result, setResult] = useState<'win' | 'lose' | 'draw' | ''>('');
-  const [currentBalance, setCurrentBalance] = useState(balance);
   const [wins, setWins] = useState(0);
-  const [showSettings, setShowSettings] = useState(false);
+  const [buttonColor, setButtonColor] = useState('blue');
 
   useEffect(() => {
     setDeck(shuffleDeck(createDeck()));
   }, []);
 
-  const dealCard = (hand: Card[], setHand: React.Dispatch<React.SetStateAction<Card[]>>): Card[] => {
-    const newDeck = [...deck];
-    const card = newDeck.pop() as Card;
-    const newHand = [...hand, card];
-    setHand(newHand);
-    setDeck(newDeck);
-    return newHand;
-  };
-
   const handleDeal = () => {
-    if (currentBalance < bet) {
+    if (balance < bet) {
       alert('Недостатньо коштів для цієї ставки!');
       return;
     }
-    setCurrentBalance(currentBalance - bet);
+    setBalance(balance - bet);
 
     setDeck(shuffleDeck(createDeck()));
 
     let newPlayerHand: Card[] = [];
     let newDealerHand: Card[] = [];
 
-    newPlayerHand = dealCard(newPlayerHand, setPlayerHand);
-    newDealerHand = dealCard(newDealerHand, setDealerHand);
-    newPlayerHand = dealCard(newPlayerHand, setPlayerHand);
-    newDealerHand = dealCard(newDealerHand, setDealerHand);
+    newPlayerHand = dealCard(newPlayerHand, setPlayerHand, deck, setDeck);
+    newDealerHand = dealCard(newDealerHand, setDealerHand, deck, setDeck);
+    newPlayerHand = dealCard(newPlayerHand, setPlayerHand, deck, setDeck);
+    newDealerHand = dealCard(newDealerHand, setDealerHand, deck, setDeck);
 
     setPlayerHand(newPlayerHand);
     setDealerHand(newDealerHand);
@@ -109,7 +54,7 @@ const Game: React.FC<GameProps> = ({ user, balance, isDemo, bet, setBet }) => {
   };
 
   const handleHit = () => {
-    const newPlayerHand = dealCard(playerHand, setPlayerHand);
+    const newPlayerHand = dealCard(playerHand, setPlayerHand, deck, setDeck);
     const newPlayerScore = calculateScore(newPlayerHand);
     setPlayerScore(newPlayerScore);
 
@@ -124,7 +69,7 @@ const Game: React.FC<GameProps> = ({ user, balance, isDemo, bet, setBet }) => {
     let newDealerScore = calculateScore(newDealerHand);
 
     while (newDealerScore < 17) {
-      newDealerHand = dealCard(newDealerHand, setDealerHand);
+      newDealerHand = dealCard(newDealerHand, setDealerHand, deck, setDeck);
       newDealerScore = calculateScore(newDealerHand);
     }
 
@@ -133,13 +78,13 @@ const Game: React.FC<GameProps> = ({ user, balance, isDemo, bet, setBet }) => {
 
     if (newDealerScore > 21 || playerScore > newDealerScore) {
       setResult('win');
-      setCurrentBalance(currentBalance + bet * 2);
+      setBalance(balance + bet * 2);
       setWins(wins + 1);
     } else if (playerScore < newDealerScore) {
       setResult('lose');
     } else {
       setResult('draw');
-      setCurrentBalance(currentBalance + bet);
+      setBalance(balance + bet);
     }
 
     setGameState('result');
@@ -155,43 +100,27 @@ const Game: React.FC<GameProps> = ({ user, balance, isDemo, bet, setBet }) => {
     setGameState('playing');
   };
 
-  const handleShowSettings = () => {
-    setShowSettings(true);
-  };
-
-  const handleCloseSettings = () => {
-    setShowSettings(false);
-  };
-
-  const handleAddTokens = (amount: number) => {
-    setCurrentBalance(currentBalance + amount);
-  };
-
   return (
     <div>
       {gameState === 'playing' && (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <h1>Гра Блекджек</h1>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <h2>{user}</h2>
+            <h2>Я</h2>
             <Deck cards={playerHand} />
             <p>Рахунок: {playerScore}</p>
-            <button onClick={handleHit}>Взяти карту</button>
-            <button onClick={handleStand}>Зупинитися</button>
+            <button onClick={handleHit} style={{ backgroundColor: buttonColor, color: 'white' }}>Взяти карту</button>
+            <button onClick={handleStand} style={{ backgroundColor: buttonColor, color: 'white', marginLeft: '10px' }}>Зупинитися</button>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <h2>Рука дилера</h2>
             <Deck cards={dealerHand.map((card, index) => (index === 0 ? card : { suit: 'hidden', rank: 'hidden' }))} />
             <p>Рахунок: {dealerScore}</p>
           </div>
-          <p>Баланс: ${currentBalance}</p>
+          <p>Баланс: ${balance}</p>
         </div>
       )}
       {gameState === 'result' && <Result result={result} onRestart={handleRestart} />}
-      {showSettings && <Settings onClose={handleCloseSettings} onAddTokens={handleAddTokens} />}
-      <div className="stats">
-        <p>Перемоги: {wins}</p>
-      </div>
     </div>
   );
 };
